@@ -1,0 +1,25 @@
+{
+  "name": "r3f-virtual-mental-health-chatbot-backend",
+  "version": "1.0.0",
+  "description": "Backend for the virtual mental health  app",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js --ext js"
+  },
+  "author": "Wawa SENSEI <contact@wawasensei.dev>",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "elevenlabs": "^1.59.0",
+    "elevenlabs-node": "^2.0.3",
+    "express": "^4.21.2",
+    "groq-sdk": "^0.17.0",
+    "openai": "^4.26.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
