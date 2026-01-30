@@ -180,7 +180,7 @@ export function Avatar(props) {
       Object.keys(nodes.EyeLeft.morphTargetDictionary).forEach((key) => {
         const mapping = facialExpressions[facialExpression];
         if (key === "eyeBlinkLeft" || key === "eyeBlinkRight") {
-          return; // eyes wink/blink are handled separately
+          return; 
         }
         if (mapping && mapping[key]) {
           lerpMorphTarget(key, mapping[key], 0.1);

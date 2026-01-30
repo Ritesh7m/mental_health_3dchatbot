@@ -1,17 +1,43 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useChat } from "../hooks/useChat";
+import { RiVoiceAiFill } from "react-icons/ri";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 export const UI = ({ hidden, ...props }) => {
   const input = useRef();
   const { chat, loading, cameraZoomed, setCameraZoomed, message } = useChat();
 
+  // State for tracking recording status
+  const [isRecording, setIsRecording] = useState(false);
+
+  // Speech recognition hooks
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+
   const sendMessage = () => {
     const text = input.current.value;
-    if (!loading && !message) {
+    if (!loading && !message && text.trim() !== "") {
       chat(text);
       input.current.value = "";
+      resetTranscript(); // Clear transcript after sending
     }
   };
+
+  const handleSpeechToggle = () => {
+    if (!isRecording) {
+      SpeechRecognition.startListening({ continuous: true, language: "en-US" });
+    } else {
+      SpeechRecognition.stopListening();
+    }
+    setIsRecording(!isRecording);
+  };
+
+  // Keep input field updated with the transcript if recording
+  if (transcript && isRecording) {
+    input.current.value = transcript;
+  }
+
   if (hidden) {
     return null;
   }
@@ -19,10 +45,6 @@ export const UI = ({ hidden, ...props }) => {
   return (
     <>
       <div className="fixed top-0 left-0 right-0 bottom-0 z-10 flex justify-between p-4 flex-col pointer-events-none">
-        <div className="self-start backdrop-blur-md bg-white bg-opacity-50 p-4 rounded-lg">
-          <h1 className="font-black text-xl">3D Chat Bot</h1>
-          <p>I am here to help you ❤️</p>
-        </div>
         <div className="w-full flex flex-col items-end justify-center gap-4">
           <button
             onClick={() => setCameraZoomed(!cameraZoomed)}
@@ -63,13 +85,13 @@ export const UI = ({ hidden, ...props }) => {
           <button
             onClick={() => {
               const body = document.querySelector("body");
-              if (body.classList.contains("greenScreen")) {
-                body.classList.remove("greenScreen");
+              if (body.classList.contains("")) {
+                body.classList.remove("");
               } else {
-                body.classList.add("greenScreen");
+                body.classList.add("");
               }
             }}
-            className="pointer-events-auto bg-pink-500 hover:bg-pink-600 text-white p-4 rounded-md"
+            className="pointer-events-auto bg-transparent bg-pink-500 cursor-default text-white p-4 rounded-md"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -86,6 +108,7 @@ export const UI = ({ hidden, ...props }) => {
             </svg>
           </button>
         </div>
+
         <div className="flex items-center gap-2 pointer-events-auto max-w-screen-sm w-full mx-auto">
           <input
             className="w-full placeholder:text-gray-800 placeholder:italic p-4 rounded-md bg-opacity-50 bg-white backdrop-blur-md"
@@ -97,6 +120,18 @@ export const UI = ({ hidden, ...props }) => {
               }
             }}
           />
+
+          {/* Speech Recognition Button */}
+          <button
+            onClick={handleSpeechToggle}
+            className={`bg-pink-500 hover:bg-pink-600 text-white p-4 px-10 font-semibold uppercase rounded-md ${
+              listening ? "bg-red-500" : ""
+            }`}
+          >
+            <RiVoiceAiFill className="text-2xl" />
+          </button>
+
+          {/* Send Button */}
           <button
             disabled={loading || message}
             onClick={sendMessage}
